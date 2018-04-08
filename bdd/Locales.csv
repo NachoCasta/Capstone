@@ -1,12 +1,11 @@
-Tipo;Cantidad de locales
-Verdulería;39
-Carnicería;18
-Frutería;35
-Pescadería;16
-Huevería;11
-Abarrotes;15
-Florería;12
-Ropa;13
-Mascotería;15
-Bazar;13
-None;None
+Tipo;Cantidad de locales;Cantidad de puestos equivales
+Verdulería;39;4
+Carnicería;18;2
+Frutería;35;5
+Pescadería;16;2
+Huevería;11;2
+Abarrotes;15;3
+Florería;12;1
+Ropa;13;2
+Mascotería;15;4
+Bazar;13;2

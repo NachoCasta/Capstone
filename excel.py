@@ -18,11 +18,14 @@ def excel_to_csv(file):
             with open("bdd/Largo calles.csv", "w") as f:
                 f.write("Largo de las calles [metros]\n")
                 f.write(str(sheet["I3"].value))
-        tabla = [[c.value for c in fila[1:lf]]
+        tabla = [[c.value for c in fila[1:lf+1]]
                  for fila in sheet.iter_rows(row_offset=header)]
         print("Creando {}.csv".format(hoja))
         with open("bdd/{}.csv".format(hoja), "w") as f:
             for fila in tabla:
+                if hoja != "Sensibilidad":
+                    if str(fila[1]) == "None":
+                        break
                 f.write(";".join(map(str, fila))+"\n")
         print("Creado {}.csv".format(hoja))
 
