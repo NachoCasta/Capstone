@@ -1,35 +1,31 @@
-import pandas as pd
-
-def excel_to_table(file, hoja):
-    table = pd.read_excel(
-        file, sheetname=hoja, header=1,
-        parse_cols="B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q," + \
-        " R, S, T, U, V, W, X, Y, Z")
-##    fin = 0
-##    for i in range(len(table)):
-##        fila = table.iloc[i].real
-##        nombre = fila[0]
-##        fin = i
-##        if str(nombre) == " " or str(nombre) == "nan" or str(nombre) == "":
-##            break
-##    tabla = table[0:fin]
-    tabla = [[j for j in table.iloc[i].real]
-             for i in range(len(table))]
-    return tabla
-
-def hojas(file="nuevo excel.xlsx"):
-    excel = pd.ExcelFile(file)
-    return excel.sheet_names
+from openpyxl import Workbook, load_workbook
 
 def excel_to_csv(file):
-    for hoja in hojas(file):
-        print("Comenzando {}".format(hoja))
-        tabla = excel_to_table(file, hoja)
+    print("Comienza creación de csv's")
+    wb = load_workbook(file)
+    print("Excel abierto")
+    hojas = [
+        ("Ciudad", 2, 6),
+        ("Supermercado", 2, 2),
+        ("Locales", 1, 3),
+        ("Histórico de Compras", 2, 12),
+        ("Sensibilidad", 1, 1)
+        ]
+    for hoja, header, lf in hojas:
+        print("Leyendo {}".format(hoja))
+        sheet = wb[hoja]
+        if hoja == "Ciudad":
+            with open("bdd/Largo calles.csv", "w") as f:
+                f.write("Largo de las calles [metros]\n")
+                f.write(str(sheet["I3"].value))
+        tabla = [[c.value for c in fila[1:lf]]
+                 for fila in sheet.iter_rows(row_offset=header)]
+        print("Creando {}.csv".format(hoja))
         with open("bdd/{}.csv".format(hoja), "w") as f:
             for fila in tabla:
                 f.write(";".join(map(str, fila))+"\n")
         print("Creado {}.csv".format(hoja))
 
-
+               
 if __name__ == "__main__":
     excel_to_csv("bdd/Datos.xlsx")
