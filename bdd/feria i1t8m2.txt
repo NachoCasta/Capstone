@@ -1,0 +1,14 @@
+Tamaño feria: 8
+Calles por iteracion: 1
+Cantidad de candidatos: 2
+Tiempo: 00:00:01
+Tiempo: 00:00:03
+Tiempo: 00:00:05
+Tiempo: 00:00:07
+Tiempo: 00:00:10
+Tiempo: 00:00:12
+Tiempo: 00:00:15
+
+Feria:
+(27, 28)(28, 28)(29, 28)(30, 28)(31, 28)
+(32, 28)(33, 28)(34, 28)
