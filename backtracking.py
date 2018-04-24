@@ -224,4 +224,4 @@ def buscar_mejor(calles_por_iteracion, tamaño_feria, mejores_n):
     
 
 if __name__ == "__main__":
-    mejor = buscar_mejor(5, 23, 4)
+    mejor = buscar_mejor(2, 23, 4)

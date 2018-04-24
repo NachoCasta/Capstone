@@ -1,17 +1,17 @@
 Tamaño feria: 23
 Calles por iteracion: 2
-Cantidad de candidatos: 5
-Tiempo: 00:00:17
-Tiempo: 00:00:40
-Tiempo: 00:01:12
-Tiempo: 00:01:53
-Tiempo: 00:02:42
-Tiempo: 00:03:50
-Tiempo: 00:05:08
-Tiempo: 00:06:28
-Tiempo: 00:07:49
-Tiempo: 00:09:09
-Tiempo: 00:10:24
+Cantidad de candidatos: 4
+Tiempo: 00:00:13
+Tiempo: 00:00:31
+Tiempo: 00:00:52
+Tiempo: 00:01:16
+Tiempo: 00:01:43
+Tiempo: 00:02:12
+Tiempo: 00:02:44
+Tiempo: 00:03:18
+Tiempo: 00:03:55
+Tiempo: 00:04:35
+Tiempo: 00:05:16
 
 Feria:
 (28, 21)(27, 21)(27, 22)(27, 23)(27, 24)
