@@ -1,0 +1,4 @@
+Tamaño feria: 23
+Calles por iteracion: 5
+Cantidad de candidatos: 4
+Tiempo: 00:54:40

@@ -25,9 +25,9 @@ def feria_como_punto(n=10, limit=0):
             ds = (abs(x_c - x_s) + abs(y_c - y_s))*100
             probabilidad = e**(df*s)/(e**(df*s)+e**(ds*s))
             for dia, tiendas in dias.items():
-                if random() < probabilidad:
-                    demanda_total = sum(v for v in tiendas.values())
-                    calles[calle_f] += demanda_total
+                #if random() < probabilidad:
+                demanda_total = sum(v for v in tiendas.values())
+                calles[calle_f] += demanda_total*probabilidad
         if limit != 0:
             c += 1
             if c == limit:

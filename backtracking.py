@@ -15,6 +15,7 @@ class Feria:
     def __init__(self, calles=[]):
         self.inicio = None
         self.final = None
+        self.largo = 0
 
     def __repr__(self):
         return ", ".join(map(str, (e for e in self)))
@@ -34,10 +35,7 @@ class Feria:
         return actual
 
     def __len__(self):
-        c = 0
-        for e in self:
-            c += 1
-        return c - 1
+        return self.largo
 
     def __eq__(self, other):
         if len(self) == len(other):
@@ -54,8 +52,8 @@ class Feria:
         if self.inicio is None:
             self.inicio = esquina
             self.final = esquina
-            return
         else:
+            self.largo += 1
             if self.final.es_adyacente(esquina):
                 self.final.siguiente = esquina
                 esquina.anterior = self.final
@@ -66,6 +64,8 @@ class Feria:
                 self.inicio = esquina
             else:
                 raise Exception("No se puede agregar")
+        if esquina.orden is None:
+            esquina.orden = self.largo
 
     def opciones(self):
         esquinas = self.inicio.adyacentes() + self.final.adyacentes()
@@ -78,7 +78,8 @@ class Feria:
     def copy(self):
         f = Feria()
         for e in self:
-            f.agregar(Esquina(e.x, e.y))
+            
+            f.agregar(e.copy())
         return f
 
     def mas_cercana(self, x, y):
@@ -102,6 +103,7 @@ class Esquina:
         self.y = y
         self.anterior = None
         self.siguiente = None
+        self.orden = None
 
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
@@ -120,6 +122,11 @@ class Esquina:
         esquinas = [(x-1, y), (x+1, y), (x, y-1), (x,y+1)]
         esquinas = [Esquina(x, y) for x, y in esquinas if x >= 0 and y >= 0]
         return esquinas
+
+    def copy(self):
+        e = Esquina(self.x, self.y)
+        e.orden = self.orden
+        return e
         
 
         
@@ -152,15 +159,20 @@ def simular_ferias(ferias, limit=0):
             ds = (abs(x_c - x_s) + abs(y_c - y_s))*100
             probabilidad = e**(df*s)/(e**(df*s)+e**(ds*s))
             for dia, tiendas in dias.items():
-                if random() < probabilidad:
-                    demanda_total = sum(v for v in tiendas.values())
-                    ferias_counter[i] += demanda_total
+##                if random() < probabilidad:
+##                    demanda_total = sum(v for v in tiendas.values())
+##                    ferias_counter[i] += demanda_total
+                demanda_total = sum(v for v in tiendas.values())
+                ferias_counter[i] += demanda_total*probabilidad
         if limit != 0:
             c += 1
             if c == limit:
                 break
 
-    mejor = ferias[ferias_counter.most_common(1)[0][0]]
+    contador = ferias_counter.most_common(1)[0]
+    mejor = ferias[contador[0]], contador[1]
+
+    #print(ferias_counter.most_common(1)[0][1])
 
     return mejor
 
@@ -169,7 +181,7 @@ def buscar_mejor(calles_por_iteracion, tamaño_feria, mejores_n):
     inicio = time.time()
     mejores_puntos = json.load(open('bdd/top10.json'))[:mejores_n]
     mejores_ferias = []
-    with open("bdd/feria i{}t{}m{}.txt".format(
+    with open("bdd/feria t{1}i{0}m{2}.txt".format(
         calles_por_iteracion, tamaño_feria, mejores_n), "w") as fp:
         fp.write("Tamaño feria: {}\n".format(tamaño_feria))
         fp.write("Calles por iteracion: {}\n".format(calles_por_iteracion))
@@ -189,34 +201,27 @@ def buscar_mejor(calles_por_iteracion, tamaño_feria, mejores_n):
         mejores_ferias = []
         for feria in ferias:
             ferias = combinaciones(feria, i)
-            feria = simular_ferias(ferias)
+            feria, _ = simular_ferias(ferias)
             if feria not in mejores_ferias:
                 mejores_ferias.append(feria)
         inter = time.time()
         delta = time.strftime("Tiempo: %H:%M:%S", time.gmtime(inter-inicio))
         print("{} - Tamaño feria: {} - Cantidad ferias: {}".format(
             delta, i, len(mejores_ferias)))
-        with open("bdd/feria i{}t{}m{}.txt".format(
+        with open("bdd/feria t{1}i{0}m{2}.txt".format(
             calles_por_iteracion, tamaño_feria, mejores_n), "a") as fp:
             fp.write(delta+"\n")
-    mejor = simular_ferias(mejores_ferias)
+    mejor, utilidad = simular_ferias(mejores_ferias)
     final = time.time()
     delta = time.strftime("Tiempo: %H:%M:%S", time.gmtime(final-inicio))
     
-    print(mejor)
-    with open("bdd/feria i{}t{}m{}.txt".format(
+    with open("bdd/feria t{1}i{0}m{2}.txt".format(
         calles_por_iteracion, tamaño_feria, mejores_n), "a") as fp:
         fp.write("\nFeria:\n")
-        i = 0
-        f = 0
-        while f < tamaño_feria:
-            f = i + 5
-            if f > tamaño_feria:
-                f = tamaño_feria
-            for x in range(i, f):
-                fp.write(str(mejor[x]))
-            fp.write("\n")
-            i += 5
+        for e in mejor:
+            fp.write("{} - {}\n".format(e, e.orden))
+            print("{} - {}".format(e, e.orden))
+        fp.write("\nUtilidad: ${:,}".format(round(utilidad)).replace(",", "."))
         
     return mejor
             
@@ -224,4 +229,5 @@ def buscar_mejor(calles_por_iteracion, tamaño_feria, mejores_n):
     
 
 if __name__ == "__main__":
-    mejor = buscar_mejor(2, 23, 4)
+    mejor = buscar_mejor(5, 23, 4)
+    

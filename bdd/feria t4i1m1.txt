@@ -1,0 +1,15 @@
+Tamaño feria: 4
+Calles por iteracion: 1
+Cantidad de candidatos: 1
+Tiempo: 00:00:01
+Tiempo: 00:00:02
+Tiempo: 00:00:03
+
+Feria:
+(27, 27) - 0
+(28, 27) - 1
+(29, 27) - 2
+(30, 27) - 3
+(31, 27) - 4
+
+Utilidad: $4.313.601.052
