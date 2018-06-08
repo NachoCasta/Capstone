@@ -1,0 +1,151 @@
+\documentclass[12pt]{article}
+
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[none]{hyphenat}
+\usepackage{parskip}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{tabto}
+\usepackage{multicol}
+\setlength{\headheight}{15.2pt}
+\setlength{\headsep}{5pt}
+\setlength{\columnseprule}{1pt}
+\pagestyle{fancy}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Exp}[1]{\mathcal{E}_{#1}}
+\newcommand{\List}[1]{\mathcal{L}_{#1}}
+\newcommand{\EN}{\Exp{\N}}
+\newcommand{\LN}{\List{\N}}
+
+\makeatletter
+\newcommand*\bigcdot{\mathpalette\bigcdot@{1}}
+\newcommand*\bigcdot@[2]{\mathbin{\vcenter{\hbox{\scalebox{#2}{$\m@th#1\bullet$}}}}}
+\makeatother
+
+\newcommand{\comment}[1]{}
+\newcommand{\lb}{\\~\\}
+\newcommand{\eop}{_{\square}}
+\newcommand{\hsig}{\hat{\sigma}}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\lra}{\leftrightarrow}
+
+\newcommand{\grupo}{Grupo 03}
+
+% Problema
+
+\newcommand{\problema}{Modelo de distribución dentro de una feria} 
+
+%
+
+\rhead{\grupo \ - \ \problema}
+
+\begin{document}
+% Titulo
+\begin{center}
+\vspace{0.5cm}
+{\large\bf \problema}\\
+\vspace{0.2cm}
+\footnotesize{\grupo}
+\end{center}
+
+\subsection*{En base a una feria fija}
+
+\subsubsection*{Variables}
+\begin{itemize}
+	\item[] $x_{l,t} = \{1$ ssi el local $l$ es del tipo $t\}$
+	\item[] $y_{c,p,j,f} = \{1$ ssi la calle $c$ compra en el puesto $p$ del del lado $j$ de la calle $f\}$
+	\item[] $z_{p,j,f,l} = \{1$ ssi el puesto $p$ del lado $j$ de la calle $f$ pertenece al local $l\}$
+\end{itemize}
+
+\subsubsection*{Conjuntos}
+\begin{itemize}
+	\item[] $F \ra$ Calles de feria $\{1, \dots , g\}$
+	\item[] $L \ra$ Locales $\{1, \dots , h\}$
+	\item[] $P_{f,j} \ra$ Puestos de la calle $f$ de la feria en el lado $j$ de la calle $\{1, \dots , 13\}$
+	\item[] $T \ra$ Tipos de locales $\{1, \dots , k\}$
+	\item[] $C \ra$ Calles $\{1, \dots , m\}$
+	\item[] $D \ra$ Dias $\{1, \dots , 7\}$
+\end{itemize}
+
+\subsubsection*{Parametros}
+\begin{itemize}
+	\item[] $u_{p,j,f} \ra$ posición $(x, y)$ del puesto $p$ del lado $j$ de la calle $f$
+	\item[] $v_c \ra$ posición $(x, y)$ de la calle $c$
+	\item[] $a_c \ra$  distancia de la calle $c$ al supermercado
+	\item[] $d_{c,t,d} \ra$ demanda de la calle $c$ por el tipo de local $t$ en el dia $d$
+	\item[] $e_t \ra$  cantidad de puestos que ocupa un local de tipo $t$
+	\item[] $t_t \ra$  cantidad de puestos totales del tipo de local $t$
+	\item[] $s \ra$ sensibilidad logit
+\end{itemize}
+
+\subsubsection*{Función Objetivo}
+\begin{itemize}
+\item[] $d = \max\limits_{c \in C, f \in F, j \in \{1,2\}, p \in P_f}\{ y_{c,p,j,f} |u_{p,j,f} - v_c|_1^1 \} \ra$ distancia de la calle $c$ al puesto más lejano que irá\\
+\item[]$\max 
+\displaystyle\sum\limits_{d \in D}
+\sum\limits_{c \in C}
+\sum\limits_{f \in F} 
+\sum\limits_{j \in \{1,2\}} 
+\sum\limits_{p \in P_f} 
+y_{c,p,j,f} x_{l,t} z_{p,j,l,f} \left( \dfrac{e^{sd}}{e^{sd} + e^{sa_c}}\right)$
+\end{itemize}
+\subsubsection*{Restricciones}
+
+\begin{itemize}
+    \item Cada calle debe ir a un puesto de cada tipo
+    
+    $\sum\limits_{f \in F} \sum\limits_{j \in \{1,2\}} \sum\limits_{p \in P_f} \sum\limits_{t \in T} y_{c,p,j,f} x_{l,t} z_{p,j,l,f} = 1$ \tab $\forall c \in C$ 
+    
+    \item La cantidad de puestos equivalentes totales utilizados por cada tipo de local debe ser igual a la indicada
+    
+    $\sum\limits_{f \in F} \sum\limits_{j \in \{1,2\}} \sum\limits_{p \in P_f} x_{l,t} z_{p,j,l,f} = t_t$ \tab $\forall t \in T$ 
+    
+    \item La cantidad de puestos equivalentes totales utilizados por cada tipo de local debe ser igual a la indicada
+    
+    $\sum\limits_{f \in F} \sum\limits_{j \in \{1,2\}} \sum\limits_{p \in P_f} x_{l,t} z_{p,j,l,f} = t_t$ \tab $\forall t \in T$
+    
+    \item Cada local tiene la cantidad de puestos que le corresponde, según el tipo de local
+    
+    $\sum\limits_{p \in P_f} x_{l,t} z_{p,j,f,l} = x_{l,t} e_t $ \tab $\forall l \in L, \quad \forall t \in T, \quad \forall f \in F, \quad \forall j \in \{1,2\}$ \\
+    
+    $\sum\limits_{f \in F} \sum\limits_{j \in \{1,2\}} \sum\limits_{p \in P_f} x_{l,t} z_{p,j,f,l} = x_{l,t}e_t $ \tab $\forall l \in L, \quad \forall t \in T$  
+    
+    \item Cada local debe tener sus puestos adyacentes
+    
+    $|p_1 - p_2|z_{p_1,j,f,l} z_{p_2,j,f,l} x_{l,t} < e_t $ \tab $\forall p_1, p_2 \in P_f, \quad \forall f \in F, \quad \forall t \in T, \quad \forall l \in L$ 
+    
+    \item Dos puestos del mismo tipo no pueden estar al frente
+    
+    $\sum\limits_{l \in L} x_{l,t} z_{p,1,f,l} \neq \sum\limits_{l \in L} x_{l,t} z_{p,2,f,l} $ \tab $\forall p \in P_f, \quad \forall f \in F, \quad \forall t \in T$ 
+    
+    \item Dos puestos del mismo tipo no pueden en diagonal
+    
+    $\sum\limits_{l \in L} x_{l,t} z_{p,1,f,l} \neq \sum\limits_{l \in L} x_{l,t} z_{p-1,2,f,l} $ \tab $\forall p > 1 \in P_f, \quad \forall f \in F, \quad \forall t \in T$\\
+    
+    $\sum\limits_{l \in L} x_{l,t} z_{p,1,f,l} \neq \sum\limits_{l \in L} x_{l,t} z_{p+1,2,f,l} $ \tab $\forall p < 13 \in P_f, \quad \forall f \in F, \quad \forall t \in T$
+    
+    \item Dos locales adyacentes no pueden ser iguales
+    
+    \small$\sum\limits_{l \in L} z_{p,j,f,l} z_{p-1,j,f,l} = \sum\limits_{t \in T}\left( \sum\limits_{l \in L} x_{l,t} z_{p,j,f,l} \sum\limits_{l \in L} x_{l,t} z_{p-1,j,f,l}\right) \quad \forall p > 1\in P_f, \ \forall f \in F, \ \forall j \in \{1,2\}$ \\
+    
+    \small$\sum\limits_{l \in L} z_{p,j,f,l} z_{p+1,j,f,l} = \sum\limits_{t \in T}\left( \sum\limits_{l \in L} x_{l,t} z_{p,j,f,l} \sum\limits_{l \in L} x_{l,t} z_{p+1,j,f,l}\right) \quad \forall p < 13\in P_f, \ \forall f \in F, \ \forall j \in \{1,2\}$ 
+    
+    \item Naturaleza de las variables
+    
+    $x_{l,t} \in \{0, 1\}$
+
+    $y_{c, p, j,f} \in \{0, 1\}$
+    
+    $z_{p, j,f,l} \in \{0, 1\}$
+    
+\end{itemize}
+    
+% Fin del documento
+\end{document}

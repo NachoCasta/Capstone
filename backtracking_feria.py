@@ -12,13 +12,21 @@ from lector_csv import csv_to_dict, posiciones_to_dict, posicion_supermercado, \
 
 class Feria:
 
-    def __init__(self, calles=[]):
+    def __init__(self, dist=False):
         self.inicio = None
         self.final = None
         self.largo = 0
+        self.dist = dist
 
     def __repr__(self):
         return ", ".join(map(str, (e for e in self)))
+
+    def to_map(self):
+        s = ""
+        for e in self:
+            s += e.to_map()
+            s += "\n" + "-"*27 + "\n\n"
+        return s
 
     def __iter__(self):
         actual = self.inicio
@@ -83,17 +91,35 @@ class Feria:
         return f
 
     def mas_cercana(self, x, y):
-        mejor_d = None
-        mejor_e = None
-        for e in self:
-            d = e - Esquina(x, y)
-            if mejor_d is None:
-                mejor_d = d
-                mejor_e = e
-            if d < mejor_d:
-                mejor_d = d
-                mejor_e = e
-        return mejor_e, mejor_d
+        if not self.dist:
+            mejor_d = None
+            mejor_e = None
+            for e in self:
+                d = e - Esquina(x, y)
+                if mejor_d is None:
+                    mejor_d = d
+                    mejor_e = e
+                if d < mejor_d:
+                    mejor_d = d
+                    mejor_e = e
+            return mejor_e, mejor_d
+        else:
+            mejores = []
+            for i in range(1, 11):
+                mejor_d = None
+                mejor_e = None
+                for e in self:
+                    if i in e.vereda1 or i in e.vereda2:
+                        d = e - Esquina(x, y)
+                        if mejor_d is None:
+                            mejor_d = d
+                            mejor_e = e
+                        if d < mejor_d:
+                            mejor_d = d
+                            mejor_e = e
+                mejores.append((mejor_e, mejor_d))
+            mejores.sort(key=lambda k: k[1], reverse=True)
+            return mejores[0]
         
 
 class Esquina:
@@ -104,12 +130,73 @@ class Esquina:
         self.anterior = None
         self.siguiente = None
         self.orden = None
+        self.vereda1 = [0 for i in range(13)]
+        self.vereda2 = [0 for i in range(13)]
 
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
 
     def __repr__(self):
         return "({}, {})".format(self.x, self.y)
+
+    def to_map(self):
+        nombres = {
+            0: " ",
+            1: "Verduleria",
+            2: "Carniceria",
+            3: "Fruteria",
+            4: "Pescaderia",
+            5: "Hueveria",
+            6: "Abarrotes",
+            7: "Floreria",
+            8: "Ropa",
+            9: "Mascoteria",
+            10: "Bazar"
+            }
+        puestos = {
+            0: 1,
+            1: 4,
+            2: 2,
+            3: 5,
+            4: 2,
+            5: 2,
+            6: 3,
+            7: 1,
+            8: 2,
+            9: 4,
+            10: 2
+            }
+        s = ""
+        vl = ""
+        v = ""
+        ultimo = ""
+        for p in self.vereda1:
+            if ultimo == p and p != 0:
+                continue
+            c = puestos[p]
+            vl += "+" + (2*c-1)*"-"
+            v += "|"
+            v += ("{0: ^"+str(2*c-1)+"}").format(cortar(nombres[p], 2*c-1))
+            ultimo = p
+        s += vl + "+\n"
+        s += v + "|\n"
+        s += vl + "+\n"
+        s += "\n"
+        vl = ""
+        v = ""
+        ultimo = ""
+        for p in self.vereda2:
+            if ultimo == p and p != 0:
+                continue
+            c = puestos[p]
+            vl += "+" + (2*c-1)*"-"
+            v += "|"
+            v += ("{0: ^"+str(2*c-1)+"}").format(cortar(nombres[p], 2*c-1))
+            ultimo = p
+        s += vl + "+\n"
+        s += v + "|\n"
+        s += vl + "+\n"
+        return s
 
     def __sub__(self, other):
         return abs(self.x - other.x) + abs(self.y - other.y)
@@ -128,7 +215,12 @@ class Esquina:
         e.orden = self.orden
         return e
         
-
+def cortar(string, largo_max):
+    if len(string) > largo_max:
+        return string[:largo_max]
+    else:
+        return string
+    
         
 def combinaciones(feria, limite=23, opciones=None):
     "Busca todas las combinaciones de 23 calles a partir de la esquina dada"
@@ -145,6 +237,8 @@ def combinaciones(feria, limite=23, opciones=None):
 
 def simular_ferias(ferias, limit=0):
     "Mejores n posiciones de la feria como un punto"
+    if type(ferias) != list:
+        ferias = [ferias]
     ferias_counter = Counter()
     demanda = csv_to_dict("bdd/Semana 5.csv")
     posiciones = posiciones_to_dict()
@@ -229,5 +323,5 @@ def buscar_mejor(calles_por_iteracion, tamaño_feria, mejores_n):
     
 
 if __name__ == "__main__":
-    mejor = buscar_mejor(5, 23, 4)
-    
+    #mejor = buscar_mejor(5, 23, 4)
+    pass
